@@ -63,7 +63,7 @@ object List{
   def length[A](as: List[A]):Int=
     foldRight(as,0) ((_,i)=>i+1)
   def leftFromRight[A,B](as: List[A],z:B)(f:(B,A)=>B):B=
-    foldRight(reverse(as),z) ((a,b)=>f(b,a))
+    foldRight(as,(b:B)=>b) ((a,g)=>b=>g(f(b,a))) (z)
   def foldLeft[A,B](as:List[A],z:B)(f:(B,A)=>B):B={
     @annotation.tailrec
     def loop (l:List[A],b:B): B = l match{
@@ -73,9 +73,11 @@ object List{
     loop(as,z)
   }
   def rightFromLeft[A,B](as:List[A],z:B) (f:(A,B)=>B): B=
-    foldLeft(reverse(as),z) ((b,a)=>f(a,b))
+    foldLeft(as,(b:B)=>b) ((g,a)=>b=>g(f(a,b))) (z)
   def reverse[A](as: List[A]):List[A]=
     foldLeft(as,Nil:List[A]) ((xs,x)=>Cons(x,xs))
   def appendAll[A] (ss: List[List[A]]):List[A]=
    foldLeft(ss,Nil:List[A]) (appendByFold)
+  def map[A,B] (as: List[A])(f:A=>B):List[B]=
+    rightFromLeft(as,Nil:List[B])((a,bs)=>Cons(f(a),bs))
 }
