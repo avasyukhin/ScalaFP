@@ -80,4 +80,19 @@ object List{
    foldLeft(ss,Nil:List[A]) (appendByFold)
   def map[A,B] (as: List[A])(f:A=>B):List[B]=
     rightFromLeft(as,Nil:List[B])((a,bs)=>Cons(f(a),bs))
+  def filter[A] (as: List[A])(f:A=>Boolean):List[A]=
+    flatMap(as)(a=>if (f(a)) Cons(a,Nil:List[A]) else Nil:List[A]) 
+  def flatMap[A,B] (as: List[A])(f:A=>List[B]):List[B]=
+    rightFromLeft(as,Nil:List[B])((a,bs)=>appendByFold(f(a),bs))
+  @annotation.tailrec
+  def hasSubsequence[A](sup:List[A],sub: List[A]):Boolean = sup match {
+    case Nil => false
+    case Cons(p,ps) => if (startsWith(Cons(p,ps),sub)) true else hasSubsequence(ps,sub)
+  }
+  @annotation.tailrec
+  def startsWith[A](sup:List[A],sub: List[A]):Boolean = (sup,sub) match{
+    case (_,Nil) => true
+    case (Cons(p,ps),Cons(b,bs)) if (p==b) => startsWith(ps,bs)
+    case _ => false
+  }
 }

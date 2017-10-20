@@ -1,4 +1,4 @@
-object FindFirstString {
+object FindFirst {
   def findFirst[A](as: Array[A], p:A => Boolean): Int = {
     @annotation.tailrec
     def loop(n: Int): Int =
