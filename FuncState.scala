@@ -59,3 +59,16 @@ def map[A,B](s: Rand[A])(f: A => B): Rand[B]=
     g(a)(rng1)
    }
 }
+
+object FuncState{
+case class State[S,+A] (run: S => (A,S)){
+  def map[B](f: A => B): State[S,B] = 
+    State(s =>{
+      val (a1,s1) = this.run(s)
+      (f(a1),s1)
+  })
+}
+object State{
+  def unit[A,S](a:A) :State[S,A] = 
+    State(s => {(a,s)})
+}}
